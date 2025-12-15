@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:id="@+id/icon_category"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/circle_background"
+        android:padding="8dp"
+        app:tint="@color/white"
+        android:src="@android:drawable/ic_menu_help" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Note"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?android:attr/textColorSecondary"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/text_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?android:attr/textColorSecondary" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$0.00"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textStyle="bold"
+        android:textColor="@color/black" />
+
+</LinearLayout>
