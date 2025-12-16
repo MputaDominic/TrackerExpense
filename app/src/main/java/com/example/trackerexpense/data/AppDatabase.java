@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Expense.class, Category.class}, version = 1, exportSchema = false)
+@Database(entities = {Expense.class, Category.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract ExpenseDao expenseDao();
@@ -27,6 +27,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "expense_tracker_database")
                             .addCallback(sRoomDatabaseCallback)
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
@@ -40,15 +41,15 @@ public abstract class AppDatabase extends RoomDatabase {
             super.onCreate(db);
 
             // Populate the database in the background.
-            // If you want to start with more words, just add them.
             databaseWriteExecutor.execute(() -> {
                 // Populate the database with default categories
                 CategoryDao dao = INSTANCE.categoryDao();
-                dao.insert(new Category("Food", "ic_food", "#FF5722"));
-                dao.insert(new Category("Transport", "ic_transport", "#2196F3"));
-                dao.insert(new Category("Shopping", "ic_shopping", "#E91E63"));
-                dao.insert(new Category("Health", "ic_health", "#4CAF50"));
-                dao.insert(new Category("Entertainment", "ic_entertainment", "#9C27B0"));
+                dao.insert(new Category("Food", "ic_food", "#FF5722", "EXPENSE"));
+                dao.insert(new Category("Transport", "ic_transport", "#2196F3", "EXPENSE"));
+                dao.insert(new Category("Shopping", "ic_shopping", "#E91E63", "EXPENSE"));
+                dao.insert(new Category("Health", "ic_health", "#4CAF50", "EXPENSE"));
+                dao.insert(new Category("Entertainment", "ic_entertainment", "#9C27B0", "EXPENSE"));
+                dao.insert(new Category("Salary", "ic_salary", "#4CAF50", "INCOME"));
             });
         }
     };
