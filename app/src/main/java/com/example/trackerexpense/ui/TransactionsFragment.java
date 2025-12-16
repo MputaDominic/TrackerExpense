@@ -22,6 +22,9 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 public class TransactionsFragment extends Fragment {
 
     private ExpenseViewModel mExpenseViewModel;
+    private TextView textTotalBalance;
+    private double totalIncome = 0;
+    private double totalExpense = 0;
 
     @Nullable
     @Override
@@ -33,24 +36,25 @@ public class TransactionsFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        TextView textTotalExpense = view.findViewById(R.id.text_total_expense);
+        textTotalBalance = view.findViewById(R.id.text_total_balance);
 
         mExpenseViewModel = new ViewModelProvider(requireActivity()).get(ExpenseViewModel.class);
 
-        mExpenseViewModel.getAllExpenses().observe(getViewLifecycleOwner(), expenses -> {
-            adapter.setExpenses(expenses);
+        // Observe Transactions (With Category info)
+        mExpenseViewModel.getAllTransactions().observe(getViewLifecycleOwner(), transactions -> {
+            adapter.setTransactions(transactions);
         });
 
-        mExpenseViewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
-            adapter.setCategories(categories);
+        // Observe Income
+        mExpenseViewModel.getTotalIncome().observe(getViewLifecycleOwner(), income -> {
+            totalIncome = income != null ? income : 0;
+            updateBalance();
         });
 
-        mExpenseViewModel.getTotalExpense().observe(getViewLifecycleOwner(), total -> {
-            if (total != null) {
-                textTotalExpense.setText(String.format("$%.2f", total));
-            } else {
-                textTotalExpense.setText("$0.00");
-            }
+        // Observe Expense
+        mExpenseViewModel.getTotalExpense().observe(getViewLifecycleOwner(), expense -> {
+            totalExpense = expense != null ? expense : 0;
+            updateBalance();
         });
 
         ExtendedFloatingActionButton fab = view.findViewById(R.id.fab);
@@ -60,5 +64,10 @@ public class TransactionsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void updateBalance() {
+        double balance = totalIncome - totalExpense;
+        textTotalBalance.setText(String.format("%,.2f KSh", balance));
     }
 }

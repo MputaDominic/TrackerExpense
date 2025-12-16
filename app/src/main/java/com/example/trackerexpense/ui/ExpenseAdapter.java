@@ -12,20 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trackerexpense.R;
-import com.example.trackerexpense.data.Category;
-import com.example.trackerexpense.data.Expense;
+import com.example.trackerexpense.data.TransactionWithCategory;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder> {
 
-    private List<Expense> mExpenses = new ArrayList<>();
-    private Map<Integer, Category> mCategoryMap = new HashMap<>();
+    private List<TransactionWithCategory> mTransactions = new ArrayList<>();
 
     @NonNull
     @Override
@@ -37,17 +33,26 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
 
     @Override
     public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
-        Expense current = mExpenses.get(position);
-        Category category = mCategoryMap.get(current.categoryId);
+        TransactionWithCategory current = mTransactions.get(position);
 
-        holder.amountItemView.setText(String.format("$%.2f", current.amount));
-        holder.dateItemView.setText(DateFormat.getDateInstance().format(new Date(current.date)));
-        holder.noteItemView.setText(current.note);
+        // Handle Amount Color and formatting
+        boolean isIncome = current.category != null && "INCOME".equals(current.category.type);
 
-        if (category != null) {
-            holder.categoryItemView.setText(category.name);
+        if (isIncome) {
+             holder.amountItemView.setText(String.format("+%,.2fSh", current.expense.amount));
+             holder.amountItemView.setTextColor(Color.parseColor("#4CAF50")); // Green
+        } else {
+             holder.amountItemView.setText(String.format("-%,.2fSh", current.expense.amount));
+             holder.amountItemView.setTextColor(Color.parseColor("#F44336")); // Red
+        }
+
+        holder.dateItemView.setText(DateFormat.getDateInstance().format(new Date(current.expense.date)));
+        holder.noteItemView.setText(current.expense.note);
+
+        if (current.category != null) {
+            holder.categoryItemView.setText(current.category.name);
             try {
-                int color = Color.parseColor(category.color);
+                int color = Color.parseColor(current.category.color);
                 GradientDrawable bg = (GradientDrawable) holder.iconView.getBackground();
                 bg.setColor(color);
             } catch (Exception e) {
@@ -60,19 +65,11 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
 
     @Override
     public int getItemCount() {
-        return mExpenses.size();
+        return mTransactions.size();
     }
 
-    public void setExpenses(List<Expense> expenses) {
-        mExpenses = expenses;
-        notifyDataSetChanged();
-    }
-
-    public void setCategories(List<Category> categories) {
-        mCategoryMap.clear();
-        for(Category c : categories) {
-            mCategoryMap.put(c.id, c);
-        }
+    public void setTransactions(List<TransactionWithCategory> transactions) {
+        mTransactions = transactions;
         notifyDataSetChanged();
     }
 
