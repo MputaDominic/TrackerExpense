@@ -10,6 +10,7 @@ public class ExpenseRepository {
 
     private ExpenseDao mExpenseDao;
     private CategoryDao mCategoryDao;
+    private LiveData<List<Expense>> mAllExpenses;
     private LiveData<List<TransactionWithCategory>> mAllTransactions;
     private LiveData<List<Category>> mAllCategories;
     private LiveData<Double> mTotalExpense;
@@ -19,10 +20,15 @@ public class ExpenseRepository {
         AppDatabase db = AppDatabase.getDatabase(application);
         mExpenseDao = db.expenseDao();
         mCategoryDao = db.categoryDao();
+        mAllExpenses = mExpenseDao.getAllExpenses();
         mAllTransactions = mExpenseDao.getAllTransactions();
         mAllCategories = mCategoryDao.getAllCategories();
         mTotalExpense = mExpenseDao.getTotalExpense();
         mTotalIncome = mExpenseDao.getTotalIncome();
+    }
+
+    public LiveData<List<Expense>> getAllExpenses() {
+        return mAllExpenses;
     }
 
     public LiveData<List<TransactionWithCategory>> getAllTransactions() {
