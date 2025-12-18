@@ -1,11 +1,13 @@
 package com.example.trackerexpense.ui;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,15 +36,19 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.ReportVi
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
         CategoryTotal current = mCategoryTotals.get(position);
         holder.nameView.setText(current.categoryName);
-        holder.amountView.setText(String.format("$%.2f", current.totalAmount));
+        holder.amountView.setText(String.format("%,.2fSh", current.totalAmount));
 
         double percentage = (mTotalAmount > 0) ? (current.totalAmount / mTotalAmount) * 100 : 0;
         holder.percentageView.setText(String.format("%.1f%%", percentage));
+        holder.progressBar.setProgress((int) percentage);
 
         try {
             int color = Color.parseColor(current.color);
             GradientDrawable bg = (GradientDrawable) holder.iconView.getBackground();
             bg.setColor(color);
+
+            holder.progressBar.setProgressTintList(ColorStateList.valueOf(color));
+            holder.amountView.setTextColor(color);
         } catch (Exception e) {
             // Fallback
         }
@@ -67,6 +73,7 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.ReportVi
         private final TextView percentageView;
         private final TextView amountView;
         private final ImageView iconView;
+        private final ProgressBar progressBar;
 
         private ReportViewHolder(View itemView) {
             super(itemView);
@@ -74,6 +81,7 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.ReportVi
             percentageView = itemView.findViewById(R.id.report_percentage);
             amountView = itemView.findViewById(R.id.report_amount);
             iconView = itemView.findViewById(R.id.report_category_icon);
+            progressBar = itemView.findViewById(R.id.report_progress);
         }
     }
 }
